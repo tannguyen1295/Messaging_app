@@ -1,0 +1,42 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UsersRepository } from 'src/users/users.repository';
+import { DataSource, EntityRepository, Repository } from 'typeorm';
+import { SendMessageDto } from './dto/send-message.dto';
+import { Message } from './messages.entity';
+
+@EntityRepository(Message)
+@Injectable()
+export class MessagesRepository extends Repository<Message> {
+  constructor(
+    private dataSrouce: DataSource,
+    private usersRepository: UsersRepository,
+  ) {
+    super(Message, dataSrouce.createEntityManager());
+  }
+
+  async createMessage(
+    sendMessageDto: SendMessageDto,
+    receiver: string,
+  ): Promise<void> {
+    const { sender, content } = sendMessageDto;
+
+    const senderExisting = await this.usersRepository.findOneBy({
+      username: sender,
+    });
+    const receiverExisting = await this.usersRepository.findOneBy({
+      username: receiver,
+    });
+
+    if (!senderExisting || !receiverExisting) {
+      throw new NotFoundException('Either sender or receiver cannot be found');
+    }
+
+    const message = this.create({
+      content,
+      sender_id: senderExisting.id,
+      receiver_id: receiverExisting.id,
+    });
+
+    await this.save(message);
+  }
+}
