@@ -1,7 +1,9 @@
+import { User } from 'src/users/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -11,14 +13,14 @@ export class Message {
   id: string;
 
   @Column()
-  content: string;
+  message: string;
 
-  @Column()
-  sender_id: string;
+  @ManyToOne(() => User, (user) => user.id)
+  sender: User;
 
-  @Column()
-  receiver_id: string;
+  @ManyToOne(() => User, (user) => user.id)
+  receiver: User;
 
   @CreateDateColumn({ type: 'timestamptz' })
-  created_date: Date;
+  createdDate: Date;
 }

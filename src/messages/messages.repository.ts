@@ -32,9 +32,9 @@ export class MessagesRepository extends Repository<Message> {
     }
 
     const message = this.create({
-      content,
-      sender_id: senderExisting.id,
-      receiver_id: receiverExisting.id,
+      message: content,
+      sender: senderExisting,
+      receiver: receiverExisting,
     });
 
     await this.save(message);
