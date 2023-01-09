@@ -4,7 +4,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from 'src/users/users.repository';
 import { SendMessageDto } from './dto/send-message.dto';
 import { GetMessages } from './interface/get-messages.interface';

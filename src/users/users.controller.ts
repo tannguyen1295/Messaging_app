@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { GetMessages } from 'src/messages/interface/get-messages.interface';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserCredentialsDto } from './dto/user-credentials.dto';
 import { GetUsers } from './interface/get-users.interface';
 import { UsersService } from './users.service';
@@ -9,6 +9,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
+  @UseGuards(AuthGuard())
   getUsers(): Promise<GetUsers> {
     return this.usersService.getUsers();
   }
