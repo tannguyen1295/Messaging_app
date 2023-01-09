@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from 'src/users/users.repository';
 import { SendMessageDto } from './dto/send-message.dto';
@@ -8,10 +13,13 @@ import { MessagesRepository } from './messages.repository';
 @Injectable()
 export class MessagesService {
   constructor(
-    @InjectRepository(MessagesRepository)
+    @Inject(forwardRef(() => MessagesRepository))
     private messagesRepository: MessagesRepository,
 
-    @InjectRepository(UsersRepository)
+    // @InjectRepository(UsersRepository)
+    // private usersRepository: UsersRepository,
+
+    @Inject(forwardRef(() => UsersRepository))
     private usersRepository: UsersRepository,
   ) {}
 

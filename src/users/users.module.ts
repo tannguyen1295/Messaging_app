@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { UsersRepository } from './users.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStategy } from './jwt.strategy';
+import { MessagesModule } from 'src/messages/messages.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { JwtStategy } from './jwt.strategy';
       },
     }),
     TypeOrmModule.forFeature([User]),
+    forwardRef(() => MessagesModule),
   ],
   providers: [UsersService, UsersRepository, JwtStategy],
   controllers: [UsersController],

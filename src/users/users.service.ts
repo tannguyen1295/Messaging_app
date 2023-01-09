@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserCredentialsDto } from './dto/user-credentials.dto';
 import { UsersRepository } from './users.repository';
@@ -7,12 +12,17 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interface/jwt-payload.interface';
 import { GetUsers } from './interface/get-users.interface';
 import { User } from './interface/user.interface';
+import { MessagesRepository } from 'src/messages/messages.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(UsersRepository)
+    @Inject(forwardRef(() => UsersRepository))
     private usersRepository: UsersRepository,
+
+    @Inject(forwardRef(() => MessagesRepository))
+    private messagesRepository: MessagesRepository,
+
     private jwtService: JwtService,
   ) {}
 
