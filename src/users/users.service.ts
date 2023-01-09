@@ -4,7 +4,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { UserCredentialsDto } from './dto/user-credentials.dto';
 import { UsersRepository } from './users.repository';
 import * as bcrypt from 'bcrypt';
@@ -13,6 +12,8 @@ import { JwtPayload } from './interface/jwt-payload.interface';
 import { GetUsers } from './interface/get-users.interface';
 import { User } from './interface/user.interface';
 import { MessagesRepository } from 'src/messages/messages.repository';
+import { timeStamp } from 'console';
+import { GetMessages } from 'src/messages/interface/get-messages.interface';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +37,7 @@ export class UsersService {
     const { username, password } = userCredentialsDto;
     const user = this.usersRepository.findOneBy({ username: username });
 
+    // compare password and issue jwt
     if (user && (await bcrypt.compare(password, (await user).password))) {
       const payload: JwtPayload = { username };
       const accessToken: string = await this.jwtService.sign(payload);
@@ -46,9 +48,36 @@ export class UsersService {
   }
 
   async getUsers(): Promise<GetUsers> {
-    const users: User[] = await this.usersRepository.find({
-      select: { username: true },
-    });
-    return { users: users };
+    let results = [];
+
+    // Get All Users
+    const users = await this.usersRepository
+      .createQueryBuilder('user')
+      .select(['DISTINCT(user.username), user.id'])
+      .getRawMany();
+
+    // Get the latest message for each user
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      const latestMessage = await this.messagesRepository
+        .createQueryBuilder('message')
+        .select('message.createdDate')
+        .where('message.sender = :senderId', {
+          senderId: user.id,
+        })
+        .orderBy('message.createdDate', 'DESC')
+        .getRawOne();
+
+      const difference =
+        new Date().getTime() -
+        new Date(latestMessage.message_createdDate).getTime();
+
+      results.push({
+        username: user.username,
+        available: (difference % 3600) / 60 <= 10 ? true : false,
+      });
+    }
+
+    return { users: results };
   }
 }

@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { GetMessages } from 'src/messages/interface/get-messages.interface';
 import { UserCredentialsDto } from './dto/user-credentials.dto';
 import { GetUsers } from './interface/get-users.interface';
 import { UsersService } from './users.service';

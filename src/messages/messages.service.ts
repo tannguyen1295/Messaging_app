@@ -25,6 +25,8 @@ export class MessagesService {
 
   async getMessages(receiver: string): Promise<GetMessages> {
     let results = [];
+
+    // validate if receiver exists
     const receiverExisting = await this.usersRepository.findOneBy({
       username: receiver,
     });
@@ -33,6 +35,7 @@ export class MessagesService {
       throw new NotFoundException(`User "${receiver}" cannot be found`);
     }
 
+    // retrieve messages
     const values = await this.messagesRepository
       .createQueryBuilder('messages')
       .select(['user.username', 'messages.message', 'messages.createdDate'])
