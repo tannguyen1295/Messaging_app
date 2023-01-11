@@ -4,7 +4,7 @@ import { MessagesController } from './messages.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './messages.entity';
 import { MessagesRepository } from './messages.repository';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [forwardRef(() => UsersModule), TypeOrmModule.forFeature([Message])],

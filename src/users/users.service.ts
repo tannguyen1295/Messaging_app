@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interface/jwt-payload.interface';
 import { GetUsers } from './interface/get-users.interface';
-import { MessagesRepository } from 'src/messages/messages.repository';
+import { MessagesRepository } from '../messages/messages.repository';
 
 @Injectable()
 export class UsersService {
