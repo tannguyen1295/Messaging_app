@@ -4,6 +4,8 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
+  @OneToMany(() => Message, (message) => message.sender)
+  @OneToMany(() => Message, (message) => message.receiver)
   id: string;
 
   @Column()
@@ -11,8 +13,4 @@ export class User {
 
   @Column()
   password: string;
-
-  @OneToMany(() => Message, (message) => message.sender)
-  @OneToMany(() => Message, (message) => message.receiver)
-  messages: Message[];
 }
