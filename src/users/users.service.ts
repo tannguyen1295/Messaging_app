@@ -71,7 +71,7 @@ export class UsersService {
 
       results.push({
         username: user.username,
-        available: (difference % 3600) / 60 <= 10 ? true : false,
+        available: Math.round(difference / 1000 / 60) <= 10 ? true : false,
       });
     }
 
