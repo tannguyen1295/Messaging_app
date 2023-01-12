@@ -26,7 +26,9 @@
 
 A project using [Nest](https://github.com/nestjs/nest) framework TypeScript to create a RESTful API.
 
-There are two modules in this project: Users & Messages. While Users module has endpoints such as register, signin or getting users, messages can be created or fetched from the databse with Messages module. JWT is used for auth and the database is Postgres. 
+There are two modules in this project: Users & Messages. While Users module has endpoints such as register, signin or getting users, messages can be created or fetched from the databse with Messages module. JWT is used for auth and the database is Postgres.
+
+The architectural approach is to have two modules (Users and Messages) representing their endpoints groups, and each one has its own table. Eventhough it introduces circula dependency between the two modules, we will have the database structure clean in this way. In my opinion, another approach to avoid the circula dependency is to split the Messages into two where we group the information of senders, receivers, createdTime to MessagesSender module, and the other one is MessagesContent containing the content of the message. This approach only works for the current architecture and any changes in the future may require further modification. Therefore, the former solution seems to fit in a long-term as it requires less changes in to code and the database.
 
 ## Installation
 
