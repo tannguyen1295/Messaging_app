@@ -11,11 +11,6 @@ import { configValidationSchema } from './config.schema';
       envFilePath: [`./env/.env.stage.dev`],
       validationSchema: configValidationSchema,
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   autoLoadEntities: true,
-    //   synchronize: true,
-    // }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

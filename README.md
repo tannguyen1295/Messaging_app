@@ -34,6 +34,10 @@ There are two modules in this project: Users & Messages. While Users module has 
 $ yarn install
 ```
 
+## Docs
+- [Config schema](docs/config_reference.md)
+- [Config example](env/.env.stage.dev)
+
 ## Running the app
 
 ```bash
