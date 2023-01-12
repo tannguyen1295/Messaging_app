@@ -24,7 +24,9 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A project using [Nest](https://github.com/nestjs/nest) framework TypeScript to create a RESTful API.
+
+There are two modules in this project: Users & Messages. While Users module has endpoints such as register, signin or getting users, messages can be created or fetched from the databse with Messages module. JWT is used for auth and the database is Postgres. 
 
 ## Installation
 
