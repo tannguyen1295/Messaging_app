@@ -56,6 +56,8 @@ export class UsersService {
     // Get the latest message for each user
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
+
+      // Last message sent by the user
       const latestMessage = await this.messagesRepository
         .createQueryBuilder('message')
         .select('message.createdDate')
@@ -65,13 +67,18 @@ export class UsersService {
         .orderBy('message.createdDate', 'DESC')
         .getRawOne();
 
-      const difference =
-        new Date().getTime() -
-        new Date(latestMessage.message_createdDate).getTime();
+      // Calculate how far the last message is sent to the present
+      const howFarIsLastMessageInMinute = Math.round(
+        (new Date().getTime() -
+          new Date(latestMessage.message_createdDate).getTime()) /
+          1000 /
+          60,
+      );
 
+      // Add user's username and his/her availability to results and return
       results.push({
         username: user.username,
-        available: Math.round(difference / 1000 / 60) <= 10 ? true : false,
+        available: howFarIsLastMessageInMinute <= 10 ? true : false,
       });
     }
 

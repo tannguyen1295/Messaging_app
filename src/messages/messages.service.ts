@@ -45,6 +45,7 @@ export class MessagesService {
       .orderBy('messages.createdDate', 'DESC')
       .getMany();
 
+    // add messages to results and return
     values.forEach((value) => {
       results.push({
         message: value.message,
