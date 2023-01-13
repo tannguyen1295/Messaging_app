@@ -8,15 +8,15 @@ import { UsersRepository } from '../users/users.repository';
 import { SendMessageDto } from './dto/send-message.dto';
 import { GetMessages } from './interface/get-messages.interface';
 import { MessagesRepository } from './messages.repository';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class MessagesService {
+  private logger = new Logger('MessagesService');
+
   constructor(
     @Inject(forwardRef(() => MessagesRepository))
     private messagesRepository: MessagesRepository,
-
-    // @InjectRepository(UsersRepository)
-    // private usersRepository: UsersRepository,
 
     @Inject(forwardRef(() => UsersRepository))
     private usersRepository: UsersRepository,
@@ -26,15 +26,20 @@ export class MessagesService {
     let results = [];
 
     // validate if receiver exists
+    this.logger.verbose(`Checking the existence of the receiver ${receiver}`);
     const receiverExisting = await this.usersRepository.findOneBy({
       username: receiver,
     });
 
     if (!receiverExisting) {
+      this.logger.error(`${receiver} does not exist`);
       throw new NotFoundException(`User "${receiver}" cannot be found`);
     }
 
     // retrieve messages
+    this.logger.verbose(
+      `Retrieving messages with the receiver being ${receiver}`,
+    );
     const values = await this.messagesRepository
       .createQueryBuilder('messages')
       .select(['user.username', 'messages.message', 'messages.createdDate'])
@@ -46,6 +51,7 @@ export class MessagesService {
       .getMany();
 
     // add messages to results and return
+    this.logger.verbose(`Formulating the result`);
     values.forEach((value) => {
       results.push({
         message: value.message,
