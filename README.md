@@ -37,6 +37,7 @@ $ yarn install
 ```
 
 ## Docs
+- [Available endpoints](docs/api_endpoints.md)
 - [Config schema](docs/config_reference.md)
 - [Config example](env/.env.stage.dev)
 
