@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UsersRepository } from '../users/users.repository';
+import { UsersRepository } from '../auth/users.repository';
 import { SendMessageDto } from './dto/send-message.dto';
 import { GetMessages } from './interface/get-messages.interface';
 import { MessagesRepository } from './messages.repository';
@@ -23,7 +23,7 @@ export class MessagesService {
   ) {}
 
   async getMessages(receiver: string): Promise<GetMessages> {
-    let results = [];
+    const results = [];
 
     // validate if receiver exists
     this.logger.verbose(`Checking the existence of the receiver ${receiver}`);

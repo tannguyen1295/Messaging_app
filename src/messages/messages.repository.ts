@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UsersRepository } from '../users/users.repository';
+import { UsersRepository } from '../auth/users.repository';
 import { DataSource, Repository } from 'typeorm';
 import { SendMessageDto } from './dto/send-message.dto';
 import { Message } from './entity/messages.entity';

@@ -1,14 +1,5 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { UserCredentialsDto } from './dto/user-credentials.dto';
-import { UsersRepository } from './users.repository';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './interface/jwt-payload.interface';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { UsersRepository } from '../auth/users.repository';
 import { GetUsers } from './interface/get-users.interface';
 import { MessagesRepository } from '../messages/messages.repository';
 import { Logger } from '@nestjs/common';
@@ -23,36 +14,10 @@ export class UsersService {
 
     @Inject(forwardRef(() => MessagesRepository))
     private messagesRepository: MessagesRepository,
-
-    private jwtService: JwtService,
   ) {}
 
-  async register(userCredentialsDto: UserCredentialsDto): Promise<void> {
-    return this.usersRepository.createUser(userCredentialsDto);
-  }
-
-  async signIn(
-    userCredentialsDto: UserCredentialsDto,
-  ): Promise<{ accessToken: string }> {
-    const { username, password } = userCredentialsDto;
-
-    this.logger.verbose(`Getting user ${username} from the database`);
-    const user = this.usersRepository.findOneBy({ username: username });
-
-    // compare password and issue jwt
-    this.logger.verbose(`Authorizing user ${username}`);
-    if (user && (await bcrypt.compare(password, (await user).password))) {
-      const payload: JwtPayload = { username };
-      const accessToken: string = await this.jwtService.sign(payload);
-      return { accessToken };
-    } else {
-      this.logger.error(`Wrong credentials for user ${username}`);
-      throw new UnauthorizedException('Please check your login credentials.');
-    }
-  }
-
   async getUsers(): Promise<GetUsers> {
-    let results = [];
+    const results = [];
 
     // Get All Users
     this.logger.verbose(`Getting all users from the database`);
@@ -69,12 +34,12 @@ export class UsersService {
       // Last message sent by the user
       this.logger.debug(`Getting the latest message for user "${user.id}"`);
       const latestMessage = await this.messagesRepository
-        .createQueryBuilder('message')
-        .select('message.createdDate')
-        .where('message.sender = :senderId', {
+        .createQueryBuilder('messages')
+        .select('messages.createdDate')
+        .where('messages.sender = :senderId', {
           senderId: user.id,
         })
-        .orderBy('message.createdDate', 'DESC')
+        .orderBy('messages.createdDate', 'DESC')
         .getRawOne();
 
       // Calculate how far the last message is sent to the present
@@ -85,7 +50,7 @@ export class UsersService {
           60,
       );
       this.logger.debug(
-        `Latest message in minutes compared to the present "${howFarIsLastMessageInMinute}"`
+        `Latest message in minutes compared to the present "${howFarIsLastMessageInMinute}"`,
       );
 
       // Add user's username and his/her availability to results and return

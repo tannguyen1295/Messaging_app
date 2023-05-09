@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersRepository } from '../users/users.repository';
+import { UsersRepository } from '../auth/users.repository';
 import { MessagesRepository } from './messages.repository';
 import { MessagesService } from './messages.service';
 
@@ -34,7 +34,6 @@ const mockReceiver = 'receiver.example';
 
 describe('MessagesService', () => {
   let messagesService: MessagesService;
-  let messagesRepository: jest.Mocked<MessagesRepository>;
   let usersRepository: jest.Mocked<UsersRepository>;
 
   beforeEach(async () => {
@@ -47,7 +46,6 @@ describe('MessagesService', () => {
     }).compile();
 
     messagesService = module.get(MessagesService);
-    messagesRepository = module.get(MessagesRepository);
     usersRepository = module.get(UsersRepository);
   });
 

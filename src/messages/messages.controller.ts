@@ -6,7 +6,7 @@ import { MessagesService } from './messages.service';
 import { Logger } from '@nestjs/common';
 
 @Controller('messages')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 export class MessagesController {
   private logger = new Logger('MessagesController');
 

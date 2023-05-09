@@ -12,7 +12,7 @@ export class JwtStategy extends PassportStrategy(Strategy) {
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
-    private configService: ConfigService,
+    configService: ConfigService,
   ) {
     super({
       secretOrKey: configService.get('JWT_SECRET'),
